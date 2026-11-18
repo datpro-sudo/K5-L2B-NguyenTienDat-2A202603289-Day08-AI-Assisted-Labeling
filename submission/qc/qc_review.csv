@@ -1,0 +1,6 @@
+image,object_id,error_type,reviewer,note
+img_003.jpg,13,thua,Copilot visual QC,"Box #13 only covers the roof of the same three-wheeler covered by #18; remove the partial duplicate."
+img_006.jpg,,khong,Copilot visual QC,"No unambiguous error found in this visual spot-check; this does not establish missed-object recall."
+img_014.jpg,,khong,Copilot visual QC,"No unambiguous box or class error found in this visual spot-check."
+img_031.jpg,409,sai_vi_tri_kich_thuoc,Copilot visual QC,"Box top at about y=396 omits visible upper bicycle/carrier structure; review the boundary separately from loose produce per CAL-01."
+img_035.jpg,469,thua,Copilot visual QC,"Box #469 is a partial top fragment adjacent to #468 on the same small three-wheeler; consolidate to one instance."

@@ -1,4 +1,4 @@
-# Báo cáo Day 08 — <<MSHV - Họ và tên>>
+# Báo cáo Day 08 — 2A202603289 - Nguyen Tien Dat
 
 > Một file duy nhất cho cả bài (đã gộp recipe, QC và ghi chú cá nhân). Mọi con số kèm **mẫu số** và nguồn (file nào). Viết bằng lời của bạn.
 
@@ -15,9 +15,9 @@
 | three_wheeler | YOLOE-26s, prompt từ taxonomy | 0.15 | `r07`; 6 vật gold. Ngưỡng cao nhất ≤ 0.5 đạt recall mục tiêu: recall 100%, precision 67%; pilot `r04` cho thấy cần review box. |
 
 - Ngưỡng chuyển sang Part 4: `--thr "person=0.35,motorbike=0.35,three_wheeler=0.15"`; các lớp không liệt kê dùng `--conf 0.3`. Chưa chạy lệnh merge trong Part 3.
-- **Phiên bản SAM bạn chọn** (SAM 1 / 2.1 / 3) và lý do: <<chất lượng mask, tốc độ, RAM, quyền truy cập>>
-- Lỗi nào **không sửa được bằng đổi ngưỡng** (ví dụ tuk-tuk bị gọi `car`)? Sửa thế nào? <<>>
-- Box **điểm cao mà sai** hoặc **điểm thấp mà đúng** (ảnh nào): <<>>
+- **Phiên bản SAM bạn chọn:** SAM 2.1 base (`sam2.1_b.pt`), vì weights đã có sẵn và chạy được trên RTX 3050; ba lượt click mất trung bình 7.57 giây/ảnh. Đây là mask nháp: ở `img_013.jpg` mask vẫn dính người lái dù có click âm.
+- Lỗi **không sửa được bằng đổi ngưỡng:** YOLO26 không có lớp tuk-tuk/`three_wheeler` trong taxonomy COCO nên có thể gọi nhầm thành `car` hoặc `truck`. Dùng YOLOE làm nguồn ứng viên rồi đối chiếu định nghĩa và sửa lớp bằng mắt; đổi confidence không đổi được tên lớp.
+- Box **điểm cao mà sai / điểm thấp mà sai:** YOLOE `img_002.jpg` có box score 0.9267 nhưng box lỏng/chồng lên vùng xe khác (`r04`); ở `img_011.jpg`, score 0.2834 đặt nhầm vào mép xe xanh tiền cảnh và bỏ xe ba bánh chở hàng màu cam (`r04`). Điểm confidence không thay thế kiểm tra vị trí và đối tượng.
 - Giới hạn: chỉ có 4 ảnh gold; chọn ngưỡng và tính precision/recall trên cùng dữ liệu nên số đo trên gold lạc quan. Ngưỡng chỉ là ước lượng thô, đặc biệt với lớp ít vật hoặc không có mẫu như bus/truck.
 
 ## 2. AI error profile (từ `qc/review_stats.md`)
@@ -63,26 +63,26 @@
 
 ## 6. Calibration (Part 6)
 
-- Số quyết định: <<>> (`calibration_decisions.csv`); quan trọng nhất (dẫn `CAL-xx`): <<>>
-- Quy tắc mới đã vào `guideline_v1.1_calibrated.md`: <<>>
-- Nguyên nhân gốc: <<guideline mơ hồ / chưa nắm quy tắc / máy>>
+- Số quyết định: 4 (`qc/calibration_decisions.csv`); quan trọng nhất: `CAL-03` loại box bộ phận trùng trên cùng xe, và `CAL-04` ghi rõ lượt bắt bẫy 5/12 ban đầu là phép đo độc lập còn lượt 12/12 sau khi biết key thì không.
+- Quy tắc mới trong `guidelines/guideline_v1.1_calibrated.md`: một vật một instance; tách giá/giỏ cố định khỏi hàng rời; kính thuộc mask xe nhưng người vẫn là instance riêng; quét ảnh theo góc phần tư trước khi xem nhãn máy và kiểm theo checklist sau đó.
+- Nguyên nhân gốc: vừa có lỗi máy (box trùng/lỏng), vừa có thiên kiến tự động hóa ở lượt review đầu; câu hỏi về hàng rời và kính cần được diễn giải cụ thể hơn. Các câu hỏi chưa có ví dụ đủ rõ vẫn để mở và cần `can_review`.
 
 ## 7. QC và quyết định (Part 6)
 
-- Mẫu: <<n>> ảnh (<<m>> ảnh `can_review` + <<k>> ngẫu nhiên, seed 42); người kiểm: bạn (**hạn chế**: bạn vừa là người duyệt).
-- Lỗi theo **đối tượng**: <<.../... = ...%>> · theo **ảnh**: <<.../... = ...%>> (ngưỡng Release ≤ 2%)
-- Top lỗi (trong: bỏ sót, thừa, sai lớp, sai vị trí/kích thước, sai thuộc tính, sai mask) + một ảnh ví dụ mỗi loại: <<>>
-- **Giới hạn mẫu nhỏ** (cận trên 95% trong `qc_report_auto.md`): <<>>
-- Script kiểm được / không kiểm được (ví dụ ôm sát, cùng bỏ sót với máy, theo checklist thật): <<>>
+- Mẫu: 5 ảnh (0 ảnh `can_review` + 5 ngẫu nhiên, seed 42); kiểm bằng Copilot visual QC trên ảnh overlay, không phải xác nhận độc lập của học viên.
+- Lỗi theo **đối tượng**: 3/98 = 3.1% · theo **ảnh**: 3/5 = 60.0% (ngưỡng Release ≤ 2%).
+- Lỗi quan sát: `thua` 2 (`img_003.jpg` #13 là box mái trùng xe #18; `img_035.jpg` #469 là box bộ phận cạnh #468); `sai_vi_tri_kich_thuoc` 1 (`img_031.jpg` #409 cắt mất phần trên của xe/giá chở hàng).
+- **Giới hạn mẫu nhỏ:** `qc_report_auto.md` cho cận trên Wilson 95% là 88%; 5 ảnh không đủ chứng minh ngưỡng lỗi thật ≤ 2%. QC bằng AI cũng không thay thế xác nhận trực tiếp của người nộp.
+- Script kiểm cấu trúc, lớp, số lượng, matching và thống kê; không tự phát hiện vật bị cả máy và người bỏ sót, cũng không xác nhận box có ôm sát thực tế. Ảnh “không lỗi rõ” trong mẫu chỉ là kết quả spot-check, không chứng minh recall đầy đủ.
 
-**Quyết định: <<Release / Hold / Rework>>**, ngày <<YYYY-MM-DD>>. Lý do (đi theo Hold → Rework → Release): <<>>
-Nếu Rework / Hold, việc cần làm tiếp: <<>>
+**Quyết định: REWORK**, ngày 2026-11-18. Không có lỗi dữ liệu khiến phải Hold, nhưng 3/5 ảnh mẫu có lỗi, vượt ngưỡng 2%; thêm nữa lượt review mù ban đầu chỉ bắt 5/12 bẫy (41.7%). Số 12/12 hiện tại là sau khi dùng key sửa bẫy, không phải kết quả độc lập.
+Việc cần làm tiếp: sửa ba đối tượng nêu trên trong CVAT, export phần sửa thành `labels/qc_fixed.json`, chạy lại `build_release.py` và QC với mẫu mới; người nộp cần tự xác nhận các overlay trước khi quyết định Release.
 
 ## 8. Ghi chú cá nhân
 
-- **Dùng AI để làm bài** (công cụ nào, việc gì, kiểm tra thế nào; "không dùng" nếu không): <<>>
-- Gold có bị nhiễm không (bạn có nhìn pre-label hay hỏi AI trước khi gán xong)? <<không / có, như sau: ...>>
-- Máy / GPU / CVAT dùng; vướng mắc cài đặt: <<>>
-- Dùng cache `data/cache/` thay vì tự chạy? <<không / có, vì ...>>
-- Lỗi / bug script đã gặp (nếu có): <<>>
-- Một điều bạn làm khác lần sau: <<>>
+- **Dùng AI:** Copilot hỗ trợ chạy model, tạo mask và điền bản nháp QC/calibration; ảnh overlay được xem trực tiếp. Lượt QC hiện tại do AI spot-check, cần người nộp xác nhận trước phát hành.
+- Gold: theo trình tự đã ghi nhận, gán `gold_manual` hoàn tất trước các lượt model; không thấy bằng chứng pre-label được dùng để tạo gold.
+- Máy / GPU / CVAT: Windows, NVIDIA RTX 3050 Laptop GPU, CUDA (PyTorch 2.6.0+cu124), CVAT Docker v2.81.0. Lỗi thiếu `ultralytics` đã xử lý bằng cài requirements vào venv.
+- Cache `data/cache/`: không ghi nhận sử dụng; các lượt model chạy từ weights local.
+- Lỗi / bug gặp: thiếu `ultralytics` khi chạy ngoài đúng venv; lệnh kích hoạt PowerShell từng bị dính vào lệnh Python do thiếu dấu xuống dòng/dấu phân cách.
+- Lần sau: giữ bản review mù riêng, không dùng key để sửa trước khi ghi kết quả bắt bẫy; làm QC trực quan độc lập trước khi chốt Release.
