@@ -5,7 +5,7 @@
 - Lớp (L2 / L3 / khác): L2B
 - Tài khoản GitHub: datpro-sudo
 - Repo bài nộp (URL): https://github.com/datpro-sudo/K5-L2B-NguyenTienDat-2A202603289-Day08-AI-Assisted-Labeling
-- Commit chốt bài (hash): Chưa commit Part 6
+- Commit chốt bài (hash): 058fa3ee02185b22e7a15e637c4044a8b513ed87
 - Máy: Windows, NVIDIA RTX 3050 Laptop GPU (CUDA; PyTorch 2.6.0+cu124)
 - CVAT (Docker): v2.81.0
 
