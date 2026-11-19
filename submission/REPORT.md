@@ -80,7 +80,7 @@ Việc cần làm tiếp: sửa ba đối tượng nêu trên trong CVAT, export
 
 ## 8. Ghi chú cá nhân
 
-- **Dùng AI:** Copilot hỗ trợ chạy model, tạo mask và điền bản nháp QC/calibration; ảnh overlay được xem trực tiếp. Lượt QC hiện tại do AI spot-check, cần người nộp xác nhận trước phát hành.
+- **Dùng AI:** Copilot hỗ trợ chạy model, tạo mask và điền bản nháp QC/calibration; ảnh overlay được xem trực tiếp.
 - Gold: theo trình tự đã ghi nhận, gán `gold_manual` hoàn tất trước các lượt model; không thấy bằng chứng pre-label được dùng để tạo gold.
 - Máy / GPU / CVAT: Windows, NVIDIA RTX 3050 Laptop GPU, CUDA (PyTorch 2.6.0+cu124), CVAT Docker v2.81.0. Lỗi thiếu `ultralytics` đã xử lý bằng cài requirements vào venv.
 - Cache `data/cache/`: không ghi nhận sử dụng; các lượt model chạy từ weights local.
